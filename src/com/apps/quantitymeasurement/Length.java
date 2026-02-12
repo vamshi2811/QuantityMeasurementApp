@@ -8,7 +8,9 @@ public class Length {
 	public enum LengthUnit {
 
 		FEET(12.0),
-		INCHES(1.0);
+		INCHES(1.0),
+		YARDS(36.0),
+		CENTIMETERS(0.393701);
 
 		private final double conversionFactor;
 
@@ -27,8 +29,8 @@ public class Length {
 		this.unit = unit;
 	}
 
-	private double convertToBaseUnit(LengthUnit lengthUnit) {
-		return this.value * lengthUnit.conversionFactor;
+	private double convertToBaseUnit(Length length) {
+		return length.value * length.unit.conversionFactor;
 	}
 
 	public boolean compare(Length thatLength) {
@@ -44,7 +46,8 @@ public class Length {
 		if (this.unit==length.unit && this.value == length.value) {
 			return true;
 		} else if (obj != null && this != obj && this.unit!=length.unit) {
-			length.value = convertToBaseUnit(length.unit);
+			this.value = convertToBaseUnit(this);
+			length.value = convertToBaseUnit(length);
 		}
 		return compare(length);
 	}
@@ -53,6 +56,14 @@ public class Length {
 		Length length1 = new Length(1.0, LengthUnit.FEET);
 		Length length2 = new Length(12.0, LengthUnit.INCHES);
 		System.out.println(length1.equals(length2));
+		
+		Length length3 = new Length(1.0, LengthUnit.YARDS);
+		Length length4 = new Length(36.0, LengthUnit.INCHES);
+		System.out.println(length3.equals(length4));
+		
+		Length length5 = new Length(100.0, LengthUnit.CENTIMETERS);
+		Length length6 = new Length(39.3701, LengthUnit.INCHES);
+		System.out.println(length5.equals(length6));
 	}
 
 }
