@@ -55,7 +55,7 @@ class QuantityMeasurementAppTest {
 		Length length1 = new Length(1.0, LengthUnit.FEET);
 		Length length2 = new Length(2.0, null);
 		Exception ex = assertThrows(NullPointerException.class, () -> length1.equals(length2));
-		assertEquals("Cannot read field \"conversionFactor\" because \"lengthUnit\" is null", ex.getMessage());
+		assertEquals("Cannot read field \"conversionFactor\" because \"length.unit\" is null", ex.getMessage());
 	}
 	
 	@Test

@@ -27,8 +27,8 @@ public class Length {
 		this.unit = unit;
 	}
 
-	private double convertToBaseUnit(LengthUnit lengthUnit) {
-		return this.value * lengthUnit.conversionFactor;
+	private double convertToBaseUnit(Length length) {
+		return length.value * length.unit.conversionFactor;
 	}
 
 	public boolean compare(Length thatLength) {
@@ -44,7 +44,8 @@ public class Length {
 		if (this.unit==length.unit && this.value == length.value) {
 			return true;
 		} else if (obj != null && this != obj && this.unit!=length.unit) {
-			length.value = convertToBaseUnit(length.unit);
+			this.value = convertToBaseUnit(this);
+			length.value = convertToBaseUnit(length);
 		}
 		return compare(length);
 	}
