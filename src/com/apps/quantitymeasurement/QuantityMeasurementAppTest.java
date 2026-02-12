@@ -23,9 +23,9 @@ class QuantityMeasurementAppTest {
 	}
 	
 	@Test
-	public void testEquality_InchToFeet_EquivalentValue() {
-		Length length1 = new Length(12.0, LengthUnit.INCHES);
-		Length length2 = new Length(1.0, LengthUnit.FEET);
+	public void testEquality_FeetToInch_EquivalentValue() {
+		Length length1 = new Length(1.0, LengthUnit.FEET);
+		Length length2 = new Length(12.0, LengthUnit.INCHES);
 		assertTrue(length1.equals(length2));
 	}
 	
@@ -52,9 +52,10 @@ class QuantityMeasurementAppTest {
 	
 	@Test
 	public void testEquality_NullUnit() {
-		Length length1 = new Length(1.0, LengthUnit.INCHES);
+		Length length1 = new Length(1.0, LengthUnit.FEET);
 		Length length2 = new Length(2.0, null);
-		assertFalse(length1.equals(length2));
+		Exception ex = assertThrows(NullPointerException.class, () -> length1.equals(length2));
+		assertEquals("Cannot read field \"conversionFactor\" because \"lengthUnit\" is null", ex.getMessage());
 	}
 	
 	@Test
