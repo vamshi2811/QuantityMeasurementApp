@@ -17,9 +17,9 @@ public class QuantityMeasurementApp {
 		demonstrateLengthComparison(1.0, Length.LengthUnit.CENTIMETERS, 0.393701, Length.LengthUnit.INCHES);
 	}
 
-	private static void demonstrateLengthComparison(double d, LengthUnit unit1, double e, LengthUnit unit2) {
-		Length length1 = new Length(d, unit1);
-		Length length2 = new Length(e, unit2);
+	private static void demonstrateLengthComparison(double value1, LengthUnit unit1, double value2, LengthUnit unit2) {
+		Length length1 = new Length(value1, unit1);
+		Length length2 = new Length(value2, unit2);
 		System.out.println(length1.equals(length2));
 	}
 }
