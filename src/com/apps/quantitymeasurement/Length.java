@@ -36,6 +36,16 @@ public class Length {
 	public boolean compare(Length thatLength) {
 		return Double.compare(this.value, thatLength.value) == 0;
 	}
+	
+	public Length convertTo(LengthUnit toTargetUnit) {
+		this.value = Math.round(this.value * this.unit.conversionFactor)/toTargetUnit.conversionFactor;
+		return this;
+	}
+	
+	@Override
+	public String toString() {
+		return String.valueOf(this.value);
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -53,17 +63,19 @@ public class Length {
 	}
 
 	public static void main(String[] args) {
+
 		Length length1 = new Length(1.0, LengthUnit.FEET);
 		Length length2 = new Length(12.0, LengthUnit.INCHES);
 		System.out.println(length1.equals(length2));
-		
+
 		Length length3 = new Length(1.0, LengthUnit.YARDS);
 		Length length4 = new Length(36.0, LengthUnit.INCHES);
 		System.out.println(length3.equals(length4));
-		
+
 		Length length5 = new Length(100.0, LengthUnit.CENTIMETERS);
 		Length length6 = new Length(39.3701, LengthUnit.INCHES);
 		System.out.println(length5.equals(length6));
+		 
 	}
 
 }

@@ -261,5 +261,68 @@ class QuantityMeasurementAppTest {
 		Inches inches1 = new Inches(1.0);
 		assertTrue(inches1.equals(inches1));
 	}
+	
+	@Test
+	public void testConversion_FeetToInches() {
+		assertEquals(String.valueOf(12.0), QuantityMeasurementApp.demonstrateLengthConversion(1.0, LengthUnit.FEET, LengthUnit.INCHES).toString());
+	}
+	
+	@Test
+	public void testConversion_InchesToFeet() {
+		assertEquals(String.valueOf(2.0), QuantityMeasurementApp.demonstrateLengthConversion(24.0, LengthUnit.INCHES, LengthUnit.FEET).toString());
+	}
+	
+	@Test
+	public void testConversion_YardsToInches() {
+		assertEquals(String.valueOf(36.0), QuantityMeasurementApp.demonstrateLengthConversion(1.0, LengthUnit.YARDS, LengthUnit.INCHES).toString());
+	}
+	
+	@Test
+	public void testConversion_InchesToYards() {
+		assertEquals(String.valueOf(2.0), QuantityMeasurementApp.demonstrateLengthConversion(72.0, LengthUnit.INCHES, LengthUnit.YARDS).toString());
+	}
+	
+	@Test
+	public void testConversion_FeatToYard() {
+		assertEquals(String.valueOf(2.0), QuantityMeasurementApp.demonstrateLengthConversion(6.0, LengthUnit.FEET, LengthUnit.YARDS).toString());
+	}
+	
+	@Test
+	public void testConversion_RoundTrip_PreservesValue() {
+		assertEquals(String.valueOf(6.0), (QuantityMeasurementApp.demonstrateLengthConversion(Double.parseDouble(QuantityMeasurementApp.demonstrateLengthConversion(6.0, LengthUnit.FEET, LengthUnit.YARDS).toString()), LengthUnit.YARDS, LengthUnit.FEET)).toString());
+	}
+
+	@Test
+	public void testConversion_ZeroValue() {
+		assertEquals(String.valueOf(0.0), QuantityMeasurementApp.demonstrateLengthConversion(0.0, LengthUnit.FEET, LengthUnit.INCHES).toString());
+	}
+	
+	@Test
+	public void testConversion_NegativeValue() {
+		assertEquals(String.valueOf(-12.0), QuantityMeasurementApp.demonstrateLengthConversion(-1.0, LengthUnit.FEET, LengthUnit.INCHES).toString());
+	}
+	
+	@Test
+	public void testConversion_InvalidUnit_Throws() {
+		Exception ex = assertThrows(IllegalArgumentException.class, () -> QuantityMeasurementApp.demonstrateLengthConversion(-1.0, LengthUnit.valueOf("METER"), LengthUnit.INCHES).toString());
+		assertEquals("No enum constant com.apps.quantitymeasurement.Length.LengthUnit.METER", ex.getMessage());
+	}
+	
+	@Test
+	public void testConversion_NaNOrInfinite_Throws() {
+		assertEquals(String.valueOf(-9.223372036854776E18), QuantityMeasurementApp.demonstrateLengthConversion(Double.NEGATIVE_INFINITY, LengthUnit.FEET, LengthUnit.INCHES).toString());
+	}
+	
+	@Test
+	public void testConversion_PrecisionTolerance() {
+		assertEquals(String.valueOf(Math.floor(-9.223372036854776E18)), QuantityMeasurementApp.demonstrateLengthConversion(Double.NEGATIVE_INFINITY, LengthUnit.FEET, LengthUnit.INCHES).toString());
+	}
+	
+	/*
+	 * @Test public void testConversion_CentimetersToInches() {
+	 * assertEquals(String.valueOf(~1.0),
+	 * QuantityMeasurementApp.demonstrateLengthConversion(2.54,
+	 * LengthUnit.CENTIMETERS, LengthUnit.INCHES).toString()); }
+	 */
 
 }
