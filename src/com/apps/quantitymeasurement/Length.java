@@ -1,5 +1,8 @@
 package com.apps.quantitymeasurement;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class Length {
 
 	private double value;
@@ -26,11 +29,11 @@ public class Length {
 
 	public Length(double value, LengthUnit unit) {
 		this.value = value;
-		this.unit = unit;
+		this.setUnit(unit);
 	}
 
 	private double convertToBaseUnit(Length length) {
-		return length.value * length.unit.conversionFactor;
+		return length.value * length.getUnit().conversionFactor;
 	}
 
 	public boolean compare(Length thatLength) {
@@ -38,8 +41,16 @@ public class Length {
 	}
 	
 	public Length convertTo(LengthUnit toTargetUnit) {
-		this.value = Math.round(this.value * this.unit.conversionFactor)/toTargetUnit.conversionFactor;
+		this.value = Math.round(this.value * this.getUnit().conversionFactor)/toTargetUnit.conversionFactor;
+		this.unit = toTargetUnit;
 		return this;
+	}
+	
+	public Length add(Length length) {
+		//System.out.println("Length 1 = "+this.value+" "+this.unit+"\nLength 2 = "+length.value+" "+length.unit);
+		length.value = new BigDecimal(this.value+(convertToBaseUnit(length)/this.unit.conversionFactor)).setScale(2, RoundingMode.HALF_UP).doubleValue();
+		length.unit = this.unit;
+		return length;
 	}
 	
 	@Override
@@ -53,9 +64,9 @@ public class Length {
 			return false;
 		}
 		Length length = (Length) obj;
-		if (this.unit==length.unit && this.value == length.value) {
+		if (this.getUnit()==length.getUnit() && this.value == length.value) {
 			return true;
-		} else if (obj != null && this != obj && this.unit!=length.unit) {
+		} else if (obj != null && this != obj && this.getUnit()!=length.getUnit()) {
 			this.value = convertToBaseUnit(this);
 			length.value = convertToBaseUnit(length);
 		}
@@ -76,6 +87,14 @@ public class Length {
 		Length length6 = new Length(39.3701, LengthUnit.INCHES);
 		System.out.println(length5.equals(length6));
 		 
+	}
+
+	public LengthUnit getUnit() {
+		return unit;
+	}
+
+	public void setUnit(LengthUnit unit) {
+		this.unit = unit;
 	}
 
 }

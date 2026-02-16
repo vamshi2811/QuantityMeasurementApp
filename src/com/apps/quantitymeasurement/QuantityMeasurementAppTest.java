@@ -61,7 +61,7 @@ class QuantityMeasurementAppTest {
 		Length length1 = new Length(1.0, LengthUnit.FEET);
 		Length length2 = new Length(2.0, null);
 		Exception ex = assertThrows(NullPointerException.class, () -> length1.equals(length2));
-		assertEquals("Cannot read field \"conversionFactor\" because \"length.unit\" is null", ex.getMessage());
+		assertEquals("Cannot read field \"conversionFactor\" because the return value of \"com.apps.quantitymeasurement.Length.getUnit()\" is null", ex.getMessage());
 	}
 	
 	@Test
@@ -144,7 +144,7 @@ class QuantityMeasurementAppTest {
 		Length length1 = new Length(1.0, LengthUnit.YARDS);
 		Length length2 = new Length(1.0, null);
 		Exception ex = assertThrows(NullPointerException.class, () -> length1.equals(length2));
-		assertEquals("Cannot read field \"conversionFactor\" because \"length.unit\" is null", ex.getMessage());
+		assertEquals("Cannot read field \"conversionFactor\" because the return value of \"com.apps.quantitymeasurement.Length.getUnit()\" is null", ex.getMessage());
 	}
 	
 	@Test
@@ -164,7 +164,7 @@ class QuantityMeasurementAppTest {
 		Length length1 = new Length(1.0, LengthUnit.CENTIMETERS);
 		Length length2 = new Length(1.0, null);
 		Exception ex = assertThrows(NullPointerException.class, () -> length1.equals(length2));
-		assertEquals("Cannot read field \"conversionFactor\" because \"length.unit\" is null", ex.getMessage());
+		assertEquals("Cannot read field \"conversionFactor\" because the return value of \"com.apps.quantitymeasurement.Length.getUnit()\" is null", ex.getMessage());
 	}
 	
 	@Test
@@ -324,5 +324,97 @@ class QuantityMeasurementAppTest {
 	 * QuantityMeasurementApp.demonstrateLengthConversion(2.54,
 	 * LengthUnit.CENTIMETERS, LengthUnit.INCHES).toString()); }
 	 */
+	
+	@Test
+	public void testAddition_SameUnit_FeetPlusFeet() {
+		Length length1 = new Length(1.0, LengthUnit.FEET);
+		Length length2 = new Length(2.0, LengthUnit.FEET);
+		assertEquals(String.valueOf(3.0), QuantityMeasurementApp.demonstrateLengthAddition(length1, length2).toString());
+	}
+	
+	@Test
+	public void testAddition_SameUnit_InchPlusInch() {
+		Length length1 = new Length(6.0, LengthUnit.INCHES);
+		Length length2 = new Length(6.0, LengthUnit.INCHES);
+		assertEquals(String.valueOf(12.0), QuantityMeasurementApp.demonstrateLengthAddition(length1, length2).toString());
+	}
+	
+	@Test
+	public void testAddition_CrossUnit_FeetPlusInches() {
+		Length length1 = new Length(1.0, LengthUnit.FEET);
+		Length length2 = new Length(12.0, LengthUnit.INCHES);
+		assertEquals(String.valueOf(2.0), QuantityMeasurementApp.demonstrateLengthAddition(length1, length2).toString());
+	}
+	
+	@Test
+	public void testAddition_CrossUnit_InchPlusFeet() {
+		Length length1 = new Length(12.0, LengthUnit.INCHES);
+		Length length2 = new Length(1.0, LengthUnit.FEET);
+		assertEquals(String.valueOf(24.0), QuantityMeasurementApp.demonstrateLengthAddition(length1, length2).toString());
+	}
+	
+	@Test
+	public void testAddition_CrossUnit_YardPlusFeet() {
+		Length length1 = new Length(1.0, LengthUnit.YARDS);
+		Length length2 = new Length(3.0, LengthUnit.FEET);
+		assertEquals(String.valueOf(2.0), QuantityMeasurementApp.demonstrateLengthAddition(length1, length2).toString());
+	}
+	
+	@Test
+	public void testAddition_CrossUnit_CentimeterPlusInch() {
+		Length length1 = new Length(2.54, LengthUnit.CENTIMETERS);
+		Length length2 = new Length(1.0, LengthUnit.INCHES);
+		assertEquals(String.valueOf(5.08), QuantityMeasurementApp.demonstrateLengthAddition(length1, length2).toString());
+	}
+	
+	@Test
+	public void testAddition_Commutavity() {
+		Length length1 = new Length(1.0, LengthUnit.FEET);
+		Length length2 = new Length(12.0, LengthUnit.INCHES);
+		
+		Length length3 = new Length(12.0, LengthUnit.INCHES);
+		Length length4 = new Length(1.0, LengthUnit.FEET);
+		
+		Length resultLength1 = QuantityMeasurementApp.demonstrateLengthAddition(length1, length2);
+		
+		Length resultLength2 = QuantityMeasurementApp.demonstrateLengthAddition(length3, length4);
+		assertTrue(resultLength1.convertTo(resultLength2.getUnit()).equals(resultLength2));
+	}
 
+	@Test
+	public void testAddition_WithZero() {
+		Length length1 = new Length(5.0, LengthUnit.FEET);
+		Length length2 = new Length(0.0, LengthUnit.INCHES);
+		assertEquals(String.valueOf(5.0), QuantityMeasurementApp.demonstrateLengthAddition(length1, length2).toString());
+	}
+	
+	@Test
+	public void testAddition_NegativeValues() {
+		Length length1 = new Length(5.0, LengthUnit.FEET);
+		Length length2 = new Length(-2.0, LengthUnit.FEET);
+		assertEquals(String.valueOf(3.0), QuantityMeasurementApp.demonstrateLengthAddition(length1, length2).toString());
+	}
+	
+	@Test
+	public void testAddition_NullSecondOperand() {
+		Length length1 = new Length(5.0, LengthUnit.FEET);
+		Length length2 = null;
+		Exception ex = assertThrows(NullPointerException.class, () -> QuantityMeasurementApp.demonstrateLengthAddition(length1, length2));
+		assertEquals("Cannot read field \"value\" because \"length\" is null", ex.getMessage());
+	}
+
+	@Test
+	public void testAddition_LargeValues() {
+		Length length1 = new Length(1e6, LengthUnit.FEET);
+		Length length2 = new Length(1e6, LengthUnit.FEET);
+		assertEquals(String.valueOf(2e6), QuantityMeasurementApp.demonstrateLengthAddition(length1, length2).toString());
+	}
+	
+	@Test
+	public void testAddition_SmallValues() {
+		Length length1 = new Length(0.004, LengthUnit.FEET);
+		Length length2 = new Length(0.005, LengthUnit.FEET);
+		assertEquals(String.valueOf(0.01), QuantityMeasurementApp.demonstrateLengthAddition(length1, length2).toString());
+	}
+	
 }

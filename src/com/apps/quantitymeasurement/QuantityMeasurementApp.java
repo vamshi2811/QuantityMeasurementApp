@@ -5,12 +5,9 @@ import com.apps.quantitymeasurement.Length.LengthUnit;
 public class QuantityMeasurementApp {
 	
 	public static void main(String[] args) {
-		
-		demonstrateLengthConversion(1.0, LengthUnit.FEET, LengthUnit.INCHES);
-		demonstrateLengthConversion(3.0, LengthUnit.YARDS, LengthUnit.FEET);
-		demonstrateLengthConversion(Double.POSITIVE_INFINITY, LengthUnit.INCHES, LengthUnit.YARDS);
-		demonstrateLengthConversion(-1.0, LengthUnit.FEET, LengthUnit.INCHES);
-		//demonstrateLengthConversion(Double.parseDouble(demonstrateLengthConversion(2.54, LengthUnit.CENTIMETERS, LengthUnit.INCHES).toString()), LengthUnit.INCHES, LengthUnit.CENTIMETERS);
+		Length length1 = new Length(5.0, LengthUnit.FEET);
+		Length Length2 = new Length(-2.0, LengthUnit.FEET);
+		demonstrateLengthAddition(length1, Length2);
 	}
 
 	public static boolean demonstrateLengthEquality(Length length1, Length length2) {
@@ -30,6 +27,12 @@ public class QuantityMeasurementApp {
 	
 	public static void demonstrateFeetInchesComparison() {
 		demonstrateLengthConversion(3.0, LengthUnit.YARDS, LengthUnit.FEET);
+	}
+	
+	public static Length demonstrateLengthAddition(Length length1, Length length2) {
+		length2 = length1.add(length2);
+		System.out.println("Addition of 2 lengths is : "+length2+" "+length2.getUnit());
+		return length2;
 	}
 
 }
