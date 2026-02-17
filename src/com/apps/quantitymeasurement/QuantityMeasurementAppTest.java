@@ -310,14 +310,15 @@ class QuantityMeasurementAppTest {
 	
 	@Test
 	public void testConversion_NaNOrInfinite_Throws() {
-		assertEquals(String.valueOf(-9.223372036854776E18), QuantityMeasurementApp.demonstrateLengthConversion(Double.NEGATIVE_INFINITY, LengthUnit.FEET, LengthUnit.INCHES).toString());
+		Exception ex = assertThrows(IllegalArgumentException.class, () -> QuantityMeasurementApp.demonstrateLengthConversion(Double.NEGATIVE_INFINITY, LengthUnit.FEET, LengthUnit.INCHES).toString());
+		assertEquals("Infinite or NaN", ex.getMessage());
 	}
-	
+
 	@Test
 	public void testConversion_PrecisionTolerance() {
-		assertEquals(String.valueOf(Math.floor(-9.223372036854776E18)), QuantityMeasurementApp.demonstrateLengthConversion(Double.NEGATIVE_INFINITY, LengthUnit.FEET, LengthUnit.INCHES).toString());
+		assertEquals(String.valueOf(Math.floor(1.2E7)), QuantityMeasurementApp
+				.demonstrateLengthConversion(1e6, LengthUnit.FEET, LengthUnit.INCHES).toString());
 	}
-	
 	/*
 	 * @Test public void testConversion_CentimetersToInches() {
 	 * assertEquals(String.valueOf(~1.0),
@@ -417,4 +418,111 @@ class QuantityMeasurementAppTest {
 		assertEquals(String.valueOf(0.01), QuantityMeasurementApp.demonstrateLengthAddition(length1, length2).toString());
 	}
 	
+	@Test
+	public void testAddition_ExplicitTargetUnit_Feet() {
+		Length length1 = new Length(1.0, LengthUnit.FEET);
+		Length length2 = new Length(12.0, LengthUnit.INCHES);
+		assertEquals(String.valueOf(2.0), QuantityMeasurementApp.demonstrateLengthAddAndConvert(length1, length2, LengthUnit.FEET).toString());
+	}
+
+	@Test
+	public void testAddition_ExplicitTargetUnit_Inches() {
+		Length length1 = new Length(1.0, LengthUnit.FEET);
+		Length length2 = new Length(12.0, LengthUnit.INCHES);
+		assertEquals(String.valueOf(24.0),
+				QuantityMeasurementApp.demonstrateLengthAddAndConvert(length1, length2, LengthUnit.INCHES).toString());
+	}
+	  
+	@Test
+	public void testAddition_ExplicitTargetUnit_Yards() {
+		Length length1 = new Length(1.0, LengthUnit.FEET);
+		Length length2 = new Length(12.0, LengthUnit.INCHES);
+		assertEquals(String.valueOf(0.67),
+				QuantityMeasurementApp.demonstrateLengthAddAndConvert(length1, length2, LengthUnit.YARDS).toString());
+	}
+
+	@Test
+	public void testAddition_ExplicitTargetUnit_Centimeters() {
+		Length length1 = new Length(1.0, LengthUnit.INCHES);
+		Length length2 = new Length(1.0, LengthUnit.INCHES);
+		assertEquals(String.valueOf(5.08), QuantityMeasurementApp
+				.demonstrateLengthAddAndConvert(length1, length2, LengthUnit.CENTIMETERS).toString());
+	}
+			  
+	@Test
+	public void testAddition_ExplicitTargetUnit_SameAsFirstOperand() {
+		Length length1 = new Length(2.0, LengthUnit.YARDS);
+		Length length2 = new Length(3.0, LengthUnit.FEET);
+		assertEquals(String.valueOf(3.0),
+				QuantityMeasurementApp.demonstrateLengthAddAndConvert(length1, length2, LengthUnit.YARDS).toString());
+	}
+	
+	@Test
+	public void testAddition_ExplicitTargetUnit_SameAsSecondOperand() {
+		Length length1 = new Length(2.0, LengthUnit.YARDS);
+		Length length2 = new Length(3.0, LengthUnit.FEET);
+		assertEquals(String.valueOf(9.0),
+				QuantityMeasurementApp.demonstrateLengthAddAndConvert(length1, length2, LengthUnit.FEET).toString());
+	}
+	
+	@Test
+	public void testAddition_ExplicitTargetUnit_Commutavity() {
+		Length length1 = new Length(1.0, LengthUnit.FEET);
+		Length length2 = new Length(12.0, LengthUnit.INCHES);
+		
+		Length length3 = new Length(12.0, LengthUnit.INCHES);
+		Length length4 = new Length(1.0, LengthUnit.FEET);
+		
+		Length resultLength1 = QuantityMeasurementApp.demonstrateLengthAddAndConvert(length1, length2, LengthUnit.YARDS);
+		
+		Length resultLength2 = QuantityMeasurementApp.demonstrateLengthAddAndConvert(length3, length4, LengthUnit.YARDS);
+		
+		assertTrue(resultLength1.equals(resultLength2));
+	}
+	
+	@Test
+	public void testAddition_ExplicitTargetUnit_WithZero() {
+		Length length1 = new Length(5.0, LengthUnit.FEET);
+		Length length2 = new Length(0.0, LengthUnit.INCHES);
+		assertEquals(String.valueOf(1.67),
+				QuantityMeasurementApp.demonstrateLengthAddAndConvert(length1, length2, LengthUnit.YARDS).toString());
+	}
+	
+	@Test
+	public void testAddition_ExplicitTargetUnit_NegativeValues() {
+		Length length1 = new Length(5.0, LengthUnit.FEET);
+		Length length2 = new Length(-2.0, LengthUnit.FEET);
+		assertEquals(String.valueOf(36.0),
+				QuantityMeasurementApp.demonstrateLengthAddAndConvert(length1, length2, LengthUnit.INCHES).toString());
+	}
+	
+	@Test
+	public void testAddition_ExplicitTargetUnit_NullTargetUnit() {
+		Length length1 = new Length(1.0, LengthUnit.FEET);
+		Length length2 = new Length(12.0, LengthUnit.INCHES);
+		Exception ex = assertThrows(NullPointerException.class, () -> QuantityMeasurementApp.demonstrateLengthAddAndConvert(length1, length2, null));
+		assertEquals("Cannot read field \"conversionFactor\" because \"toTargetUnit\" is null", ex.getMessage());
+	}
+	
+	@Test
+	public void testAddition_ExplicitTargetUnit_LargeToSmallScale() {
+		Length length1 = new Length(1000.0, LengthUnit.FEET);
+		Length length2 = new Length(500.0, LengthUnit.FEET);
+		assertEquals(String.valueOf(18000.0),
+				QuantityMeasurementApp.demonstrateLengthAddAndConvert(length1, length2, LengthUnit.INCHES).toString());
+	}
+	
+	@Test
+	public void testAddition_ExplicitTargetUnit_SmallToLargeScale() {
+		Length length1 = new Length(12.0, LengthUnit.INCHES);
+		Length length2 = new Length(12.0, LengthUnit.INCHES);
+		assertEquals(String.valueOf(0.67),
+				QuantityMeasurementApp.demonstrateLengthAddAndConvert(length1, length2, LengthUnit.YARDS).toString());
+	}
+	
+	@Test
+	public void testAddition_ExplicitTargetUnit_AllUnitComibinations() {
+		//TODO : Multiple combinations lengths addition and target to specific unit
+	}
+			 
 }

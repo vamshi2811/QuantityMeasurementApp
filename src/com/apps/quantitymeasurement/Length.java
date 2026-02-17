@@ -41,7 +41,7 @@ public class Length {
 	}
 	
 	public Length convertTo(LengthUnit toTargetUnit) {
-		this.value = Math.round(this.value * this.getUnit().conversionFactor)/toTargetUnit.conversionFactor;
+		this.value = new BigDecimal((this.value * this.unit.conversionFactor)/toTargetUnit.conversionFactor).setScale(2, RoundingMode.HALF_UP).doubleValue();
 		this.unit = toTargetUnit;
 		return this;
 	}
@@ -73,22 +73,6 @@ public class Length {
 		return compare(length);
 	}
 
-	public static void main(String[] args) {
-
-		Length length1 = new Length(1.0, LengthUnit.FEET);
-		Length length2 = new Length(12.0, LengthUnit.INCHES);
-		System.out.println(length1.equals(length2));
-
-		Length length3 = new Length(1.0, LengthUnit.YARDS);
-		Length length4 = new Length(36.0, LengthUnit.INCHES);
-		System.out.println(length3.equals(length4));
-
-		Length length5 = new Length(100.0, LengthUnit.CENTIMETERS);
-		Length length6 = new Length(39.3701, LengthUnit.INCHES);
-		System.out.println(length5.equals(length6));
-		 
-	}
-
 	public LengthUnit getUnit() {
 		return unit;
 	}
@@ -97,4 +81,17 @@ public class Length {
 		this.unit = unit;
 	}
 
+	public Length addAndConvert(Length length, LengthUnit targetUnit) {
+		length.value = new BigDecimal(this.value+(convertToBaseUnit(length)/this.unit.conversionFactor)).setScale(2, RoundingMode.HALF_UP).doubleValue();
+		length.unit = this.unit;
+		length = length.convertTo(targetUnit);
+		return length;
+	}
+
+	public static void main(String[] args) {
+		Length length1 = new Length(2.54, LengthUnit.CENTIMETERS);
+		Length length2 = new Length(1.0, LengthUnit.INCHES);
+		length1.addAndConvert(length2, LengthUnit.CENTIMETERS);
+		System.out.println("Addition of 2 lengths is : "+length2+" "+length2.getUnit());
+	}
 }
