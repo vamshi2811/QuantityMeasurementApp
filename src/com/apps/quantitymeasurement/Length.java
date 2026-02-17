@@ -9,6 +9,7 @@ public class Length {
 	private LengthUnit unit;
 
 	public enum LengthUnit {
+		//2 FEET -> INCHES - Length(value, unit) -> (2, FEET) -> 2 * 12 -> 24 INCHES
 
 		FEET(12.0),
 		INCHES(1.0),
@@ -32,18 +33,25 @@ public class Length {
 		this.setUnit(unit);
 	}
 
+	//2 FEET -> INCHES - Length(value, unit) -> (2, FEET) -> 2 * 12 -> 24 INCHES
 	private double convertToBaseUnit(Length length) {
-		return length.value * length.getUnit().conversionFactor;
+		return length.value * length.unit.conversionFactor;
 	}
 
 	public boolean compare(Length thatLength) {
 		return Double.compare(this.value, thatLength.value) == 0;
 	}
 	
-	public Length convertTo(LengthUnit toTargetUnit) {
-		this.value = new BigDecimal((this.value * this.unit.conversionFactor)/toTargetUnit.conversionFactor).setScale(2, RoundingMode.HALF_UP).doubleValue();
-		this.unit = toTargetUnit;
-		return this;
+	//6 FEET -> YARDS - Length(6, FEET), YARDS -> 6 * 12 -> 72(INCHES)/36(YARDS) 				2 YARDS
+	public Length convertToTargetUnit(Length lengthToConvert) {
+		double value = new BigDecimal(convertToBaseUnit(lengthToConvert)/lengthToConvert.getUnit().conversionFactor).setScale(2, RoundingMode.HALF_UP).doubleValue();
+		LengthUnit unit = lengthToConvert.getUnit();
+		return new Length(value, unit);
+	}
+	
+	public Length convertToTargetUnit_(Length length) {
+		double value = length.value / length.unit.conversionFactor;
+		return new Length(value,length.getUnit());
 	}
 	
 	public Length add(Length length) {
@@ -81,17 +89,17 @@ public class Length {
 		this.unit = unit;
 	}
 
-	public Length addAndConvert(Length length, LengthUnit targetUnit) {
-		length.value = new BigDecimal(this.value+(convertToBaseUnit(length)/this.unit.conversionFactor)).setScale(2, RoundingMode.HALF_UP).doubleValue();
-		length.unit = this.unit;
-		length = length.convertTo(targetUnit);
-		return length;
+	public Length addAndConvert(Length length1, Length length2, LengthUnit targetUnit) {
+		length1.value = convertToBaseUnit(length1);
+		length2.value = convertToBaseUnit(length2);
+		double length3 = length1.value+length2.value;
+		return convertToTargetUnit_(new Length(length3, targetUnit));
 	}
 
 	public static void main(String[] args) {
-		Length length1 = new Length(2.54, LengthUnit.CENTIMETERS);
-		Length length2 = new Length(1.0, LengthUnit.INCHES);
-		length1.addAndConvert(length2, LengthUnit.CENTIMETERS);
-		System.out.println("Addition of 2 lengths is : "+length2+" "+length2.getUnit());
+		Length length1 = new Length(1.0, LengthUnit.YARDS);
+		Length length2 = new Length(3.0, LengthUnit.FEET);
+		Length length3 = length1.addAndConvert(length1, length2, LengthUnit.YARDS);
+		System.out.println("Addition of 2 lengths is : "+length3.value+" "+length3.getUnit());
 	}
 }

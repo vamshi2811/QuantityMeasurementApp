@@ -283,7 +283,7 @@ class QuantityMeasurementAppTest {
 	}
 	
 	@Test
-	public void testConversion_FeatToYard() {
+	public void testConversion_FeetToYard() {
 		assertEquals(String.valueOf(2.0), QuantityMeasurementApp.demonstrateLengthConversion(6.0, LengthUnit.FEET, LengthUnit.YARDS).toString());
 	}
 	
@@ -379,7 +379,7 @@ class QuantityMeasurementAppTest {
 		Length resultLength1 = QuantityMeasurementApp.demonstrateLengthAddition(length1, length2);
 		
 		Length resultLength2 = QuantityMeasurementApp.demonstrateLengthAddition(length3, length4);
-		assertTrue(resultLength1.convertTo(resultLength2.getUnit()).equals(resultLength2));
+		assertTrue(resultLength1.convertToTargetUnit(resultLength2.getUnit()).equals(resultLength2));
 	}
 
 	@Test

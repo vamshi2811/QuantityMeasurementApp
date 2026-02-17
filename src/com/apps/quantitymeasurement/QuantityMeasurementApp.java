@@ -20,7 +20,7 @@ public class QuantityMeasurementApp {
 	
 	public static Length demonstrateLengthConversion(double value, LengthUnit fromUnit, LengthUnit toUnit) {
 		Length length1 = new Length(value, fromUnit);
-		length1 = length1.convertTo(toUnit);
+		length1 = length1.convertToTargetUnit(toUnit);
 		//System.out.println("Converted value of : "+value +" "+ fromUnit +" to Unit "+toUnit+" is : " +length1.toString());
 		return length1;
 	}
@@ -37,7 +37,7 @@ public class QuantityMeasurementApp {
 	
 	public static Length demonstrateLengthAddAndConvert(Length length1, Length length2, LengthUnit targetUnit) {
 		System.out.print("Addition of 2 lengths "+length1.toString()+length1.getUnit()+" and "+length2.toString()+length2.getUnit()+" is : ");
-		length2 = length1.addAndConvert(length2, targetUnit);
+		length2 = length1.addAndConvert(length2, null, targetUnit);
 		System.out.println(length2+" "+length2.getUnit());
 		return length2;
 	}
