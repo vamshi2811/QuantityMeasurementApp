@@ -308,20 +308,17 @@ class QuantityMeasurementAppTest {
 		assertEquals("No enum constant com.apps.quantitymeasurement.Length.LengthUnit.METER", ex.getMessage());
 	}
 	
-	// TODO Fix below test case
-	/*@Test
+	@Test
 	public void testConversion_NaNOrInfinite_Throws() {
-		assertEquals(String.valueOf(-9.223372036854776E18), QuantityMeasurementApp.demonstrateLengthConversion(Double.NEGATIVE_INFINITY, LengthUnit.FEET, LengthUnit.INCHES).toString());
+		Exception ex = assertThrows(IllegalArgumentException.class, () -> QuantityMeasurementApp.demonstrateLengthConversion(Double.NEGATIVE_INFINITY, LengthUnit.FEET, LengthUnit.INCHES).toString());
+		assertEquals("Infinite or NaN", ex.getMessage());
 	}
-	
-	
-	
-	 * @Test public void testConversion_PrecisionTolerance() {
-	 * assertEquals(String.valueOf(Math.floor(-9.223372036854776E18)),
-	 * QuantityMeasurementApp.demonstrateLengthConversion(Double.NEGATIVE_INFINITY,
-	 * LengthUnit.FEET, LengthUnit.INCHES).toString()); }
-	 */
-	
+
+	@Test
+	public void testConversion_PrecisionTolerance() {
+		assertEquals(String.valueOf(Math.floor(1.2E7)), QuantityMeasurementApp
+				.demonstrateLengthConversion(1e6, LengthUnit.FEET, LengthUnit.INCHES).toString());
+	}
 	/*
 	 * @Test public void testConversion_CentimetersToInches() {
 	 * assertEquals(String.valueOf(~1.0),
@@ -521,6 +518,11 @@ class QuantityMeasurementAppTest {
 		Length length2 = new Length(12.0, LengthUnit.INCHES);
 		assertEquals(String.valueOf(0.67),
 				QuantityMeasurementApp.demonstrateLengthAddAndConvert(length1, length2, LengthUnit.YARDS).toString());
+	}
+	
+	@Test
+	public void testAddition_ExplicitTargetUnit_AllUnitComibinations() {
+		//TODO : Multiple combinations lengths addition and target to specific unit
 	}
 			 
 }

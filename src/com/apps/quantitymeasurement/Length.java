@@ -73,13 +73,6 @@ public class Length {
 		return compare(length);
 	}
 
-	public static void main(String[] args) {
-		Length length1 = new Length(2.54, LengthUnit.CENTIMETERS);
-		Length length2 = new Length(1.0, LengthUnit.INCHES);
-		length1.addAndConvert(length2, LengthUnit.CENTIMETERS);
-		System.out.println("Addition of 2 lengths is : "+length2+" "+length2.getUnit());
-	}
-
 	public LengthUnit getUnit() {
 		return unit;
 	}
@@ -95,4 +88,10 @@ public class Length {
 		return length;
 	}
 
+	public static void main(String[] args) {
+		Length length1 = new Length(2.54, LengthUnit.CENTIMETERS);
+		Length length2 = new Length(1.0, LengthUnit.INCHES);
+		length1.addAndConvert(length2, LengthUnit.CENTIMETERS);
+		System.out.println("Addition of 2 lengths is : "+length2+" "+length2.getUnit());
+	}
 }
